@@ -32,6 +32,15 @@ repositories {
 			includeGroup "io.github.cottonmc"
 		}
 	}
+
+	maven {
+		name = "Cafeteria Development"
+		url = 'https://maven.cafeteria.dev'
+		content {
+			includeGroup 'dev.cafeteria'
+			includeGroup 'net.adriantodt.fabricmc'
+		}
+	}
 }
 
 dependencies {
@@ -51,6 +60,8 @@ dependencies {
 	include "com.minelittlepony:kirin:${project.kirin_version}"
 
 	modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
+
+	modImplementation include("dev.cafeteria:fake-player-api:${project.fakeplayerapi_version}")
 
 }
 

@@ -2,7 +2,11 @@ package com.kenza.clickmachine
 
 import com.kenza.clickmachine.utils.identifier
 import com.kenza.clickmachine.utils.openLastWorldOnInit
+import dev.cafeteria.fakeplayerapi.server.FakePlayerBuilder
+import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
 import net.fabricmc.api.ModInitializer
+import net.minecraft.sound.SoundCategory
+import net.minecraft.sound.SoundEvent
 import org.apache.logging.log4j.LogManager
 
 class ClickMachine : ModInitializer {
@@ -45,6 +49,15 @@ class ClickMachine : ModInitializer {
         // That way, it's clear which mod wrote info, warnings, and errors.
         @JvmField
         val LOGGER = LogManager.getLogger("click_machine")
+
+        val FAKE_PLAYER_BUILDER = FakePlayerBuilder(identifier("default_fake_player")) { builder, server, world, profile ->
+            object : FakeServerPlayer(builder, server, world, profile) {
+                override fun isCreative(): Boolean = false
+                override fun isSpectator(): Boolean = false
+                override fun playSound(sound: SoundEvent?, volume: Float, pitch: Float) {}
+                override fun playSound(event: SoundEvent?, category: SoundCategory?, volume: Float, pitch: Float) {}
+            }
+        }
     }
 }
 
