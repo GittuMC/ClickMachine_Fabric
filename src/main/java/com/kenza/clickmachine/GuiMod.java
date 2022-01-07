@@ -21,14 +21,13 @@ import net.minecraft.util.registry.Registry;
 
 import static com.kenza.clickmachine.ClickMachine.ID;
 
-public class Test {
+public class GuiMod {
 
     public static AutoClickerBlock GUI_BLOCK;
     public static Block NO_BLOCK_INVENTORY_BLOCK;
     public static BlockItem GUI_BLOCK_ITEM;
     public static BlockEntityType<AutoClickerBlockEntity> GUI_BLOCKENTITY_TYPE;
     public static ScreenHandlerType<AutoClickerGuiDescription> GUI_SCREEN_HANDLER_TYPE;
-//    public static ScreenHandlerType<ReallySimpleDescription> REALLY_SIMPLE_SCREEN_HANDLER_TYPE;
 
 
 
@@ -38,10 +37,8 @@ public class Test {
         Registry.register(Registry.BLOCK, new Identifier(ID, "auto_clicker"), GUI_BLOCK);
         GUI_BLOCK_ITEM = new BlockItem(GUI_BLOCK, new Item.Settings().group(ItemGroup.MISC));
         Registry.register(Registry.ITEM, new Identifier(ID, "auto_clicker"), GUI_BLOCK_ITEM);
-////        NO_BLOCK_INVENTORY_BLOCK = new NoBlockInventoryBlock(AbstractBlock.Settings.copy(Blocks.STONE));
-////        Registry.register(Registry.BLOCK, new Identifier(ID, "no_block_inventory"), NO_BLOCK_INVENTORY_BLOCK);
-//        Registry.register(Registry.ITEM, new Identifier(ID, "no_block_inventory"), new BlockItem(NO_BLOCK_INVENTORY_BLOCK, new Item.Settings().group(ItemGroup.MISC)));
         GUI_BLOCKENTITY_TYPE = FabricBlockEntityTypeBuilder.create(AutoClickerBlockEntity::new, GUI_BLOCK).build(null);
+
         Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(ID, "auto_clicker"), GUI_BLOCKENTITY_TYPE);
 //
         GUI_SCREEN_HANDLER_TYPE = ScreenHandlerRegistry.registerSimple(new Identifier(ID, "auto_clicker"), (int syncId, PlayerInventory inventory) -> {

@@ -1,13 +1,8 @@
 package com.kenza.clickmachine
 
-import com.kenza.clickmachine.blocks.AutoClickerBlockEntity
 import com.kenza.clickmachine.utils.identifier
+import com.kenza.clickmachine.utils.openLastWorldOnInit
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
-import net.minecraft.block.entity.BlockEntityType
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.screen.ScreenHandlerContext
-import net.minecraft.screen.ScreenHandlerType
 import org.apache.logging.log4j.LogManager
 
 class ClickMachine : ModInitializer {
@@ -28,7 +23,7 @@ class ClickMachine : ModInitializer {
 
         openLastWorldOnInit()
 
-        Test.test()
+        GuiMod.test()
 
 
 

@@ -1,4 +1,4 @@
-package com.kenza.clickmachine
+package com.kenza.clickmachine.utils
 
 import com.minelittlepony.common.event.ScreenInitCallback
 import net.minecraft.client.MinecraftClient

@@ -1,19 +1,17 @@
 package com.kenza.clickmachine.blocks
 
 import blue.endless.jankson.annotation.Nullable
-import com.kenza.clickmachine.Test
+import com.kenza.clickmachine.GuiMod
 import net.minecraft.util.math.BlockPos
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.screen.NamedScreenHandlerFactory
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.item.ItemStack
-import com.kenza.clickmachine.blocks.AutoClickerBlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.screen.ScreenHandler
-import com.kenza.clickmachine.blocks.AutoClickerGuiDescription
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.inventory.Inventories
@@ -22,7 +20,7 @@ import net.minecraft.util.math.Direction
 import java.util.logging.Logger
 
 class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
-    ImplementedInventory, BlockEntity(Test.GUI_BLOCKENTITY_TYPE, pos, state),
+    ImplementedInventory, BlockEntity(GuiMod.GUI_BLOCKENTITY_TYPE, pos, state),
     NamedScreenHandlerFactory {
 
 
@@ -45,7 +43,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     @Nullable
     override fun createMenu(syncId: Int, inv: PlayerInventory, player: PlayerEntity): ScreenHandler? {
         return AutoClickerGuiDescription(
-            Test.GUI_SCREEN_HANDLER_TYPE,
+            GuiMod.GUI_SCREEN_HANDLER_TYPE,
             syncId,
             inv,
             ScreenHandlerContext.create(world, pos)
