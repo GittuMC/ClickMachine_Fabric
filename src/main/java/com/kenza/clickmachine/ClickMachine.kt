@@ -1,6 +1,6 @@
 package com.kenza.clickmachine
 
-import com.kenza.clickmachine.blocks.GuiBlockEntity
+import com.kenza.clickmachine.blocks.AutoClickerBlockEntity
 import com.kenza.clickmachine.utils.identifier
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
@@ -13,19 +13,18 @@ import org.apache.logging.log4j.LogManager
 class ClickMachine : ModInitializer {
 
 
-    var GUI_BLOCKENTITY_TYPE: BlockEntityType<GuiBlockEntity>? = null
 
 
     override fun onInitialize() {
         LOGGER.info("Hello Fabric world!")
 
-        SCREEN_HANDLER_TYPE = ScreenHandlerRegistry.registerSimple(MOD_ID) { syncId: Int, inventory: PlayerInventory? ->
-            ExampleGuiDescription(
-                syncId,
-                inventory,
-                ScreenHandlerContext.EMPTY
-            )
-        }
+//        SCREEN_HANDLER_TYPE = ScreenHandlerRegistry.registerSimple(MOD_ID) { syncId: Int, inventory: PlayerInventory? ->
+//            ExampleGuiDescription(
+//                syncId,
+//                inventory,
+//                ScreenHandlerContext.EMPTY
+//            )
+//        }
 
         openLastWorldOnInit()
 
@@ -37,7 +36,7 @@ class ClickMachine : ModInitializer {
 
     companion object {
 
-        lateinit var SCREEN_HANDLER_TYPE: ScreenHandlerType<ExampleGuiDescription>
+//        lateinit var SCREEN_HANDLER_TYPE: ScreenHandlerType<ExampleGuiDescription>
 
         @JvmField
         val ID = "clickmachine"

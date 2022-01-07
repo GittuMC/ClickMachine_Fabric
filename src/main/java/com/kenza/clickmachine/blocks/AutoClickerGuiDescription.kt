@@ -4,24 +4,12 @@ import net.minecraft.screen.ScreenHandlerType
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.screen.ScreenHandlerContext
 import io.github.cottonmc.cotton.gui.SyncedGuiDescription
-import com.kenza.clickmachine.blocks.GuiBlockEntity
 import io.github.cottonmc.cotton.gui.widget.WGridPanel
 import io.github.cottonmc.cotton.gui.widget.WItemSlot
 import io.github.cottonmc.cotton.gui.widget.WButton
 import net.minecraft.text.LiteralText
-import java.lang.Runnable
-import io.github.cottonmc.cotton.gui.networking.ScreenNetworking
-import com.kenza.clickmachine.blocks.TestDescription
-import io.github.cottonmc.cotton.gui.networking.NetworkSide
-import net.minecraft.network.PacketByteBuf
-import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon
-import io.github.cottonmc.cotton.gui.widget.WTextField
-import io.github.cottonmc.cotton.gui.widget.WLabel
-import io.github.cottonmc.cotton.gui.networking.ScreenNetworking.MessageReceiver
-import net.minecraft.util.Identifier
-import java.lang.AssertionError
 
-class TestDescription(
+class AutoClickerGuiDescription(
     type: ScreenHandlerType<*>?,
     syncId: Int,
     playerInventory: PlayerInventory?,
@@ -30,18 +18,12 @@ class TestDescription(
     type,
     syncId,
     playerInventory,
-    getBlockInventory(context, GuiBlockEntity.INVENTORY_SIZE),
+    getBlockInventory(context, AutoClickerBlockEntity.INVENTORY_SIZE),
     null
 ) {
-    companion object {
-        private val TEST_MESSAGE = Identifier("libgui", "test")
-        private val UNREGISTERED_ON_SERVER = Identifier("libgui", "unregistered_on_server")
-    }
 
     init {
         val root = getRootPanel() as WGridPanel
-
-
 
         val slot = WItemSlot.of(blockInventory, 0, 1, 1)
         root.add(slot,         root.insets.right /2 + 1 , 1)
