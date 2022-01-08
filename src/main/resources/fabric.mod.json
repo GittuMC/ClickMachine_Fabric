@@ -3,8 +3,8 @@
   "id": "click_machine",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Kenza's Click Machine",
+  "description": "Adds one block to the game: Auto Clicker. This autoclicker can be placed in the world and used to simulate left or right mouse clicks.",
   "authors": [
     "DmitryKenza"
   ],
@@ -14,7 +14,7 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/clickmachine/logo.png",
 
   "environment": "*",
   "entrypoints": {
