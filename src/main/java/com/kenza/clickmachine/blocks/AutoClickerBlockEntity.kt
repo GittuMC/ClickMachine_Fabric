@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions
 import com.kenza.clickmachine.ClickMachine.Companion.FAKE_PLAYER_BUILDER
 import com.kenza.clickmachine.GuiMod
 import com.kenza.clickmachine.common.UpdateAutoClickerPacket
+import com.kenza.clickmachine.ext.LivingEntityAttribute
 import com.kenza.clickmachine.utils.toVec3d
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -27,10 +28,8 @@ import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.inventory.Inventories
-import net.minecraft.item.SwordItem
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.network.ServerPlayerInteractionManager
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
@@ -127,7 +126,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         fakePlayer.updateLastActionTime()
 
 
-        (fakePlayer as ServerPlayerEntity).tick()
+        (fakePlayer as? LivingEntityAttribute)?.lastAttackedTicksValue = 200
 
         if (itemStack == null || itemStack.isEmpty) {
             fakePlayer.inventory.clear()
@@ -137,6 +136,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         if(fakePlayer.inventory.isEmpty){
             fakePlayer.inventory.selectedSlot = 0
             fakePlayer.inventory.addPickBlock(itemStack)
+            (fakePlayer as? LivingEntityAttribute)?.kenza_sendEquipmentChanges()
         }
 
 

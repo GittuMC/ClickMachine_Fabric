@@ -2,7 +2,6 @@ package com.kenza.clickmachine
 
 import com.kenza.clickmachine.common.UpdateAutoClickerPacket
 import com.kenza.clickmachine.utils.identifier
-import com.kenza.clickmachine.utils.openLastWorldOnInit
 import dev.cafeteria.fakeplayerapi.server.FakePlayerBuilder
 import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
 import net.fabricmc.api.ModInitializer
@@ -13,6 +12,7 @@ import org.apache.logging.log4j.LogManager
 class ClickMachine : ModInitializer {
 
 
+    //data get entity @s SelectedItem
 
 
     override fun onInitialize() {
@@ -26,10 +26,9 @@ class ClickMachine : ModInitializer {
 //            )
 //        }
 
-        openLastWorldOnInit()
+//        openLastWorldOnInit()
 
-        GuiMod.test()
-
+        GuiMod.register()
         UpdateAutoClickerPacket.register()
 
 

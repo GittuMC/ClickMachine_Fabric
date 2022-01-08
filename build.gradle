@@ -57,7 +57,7 @@ dependencies {
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 
 	modApi "com.minelittlepony:kirin:${project.kirin_version}"
-	include "com.minelittlepony:kirin:${project.kirin_version}"
+	modRuntime "com.minelittlepony:kirin:${project.kirin_version}"
 
 	modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
 

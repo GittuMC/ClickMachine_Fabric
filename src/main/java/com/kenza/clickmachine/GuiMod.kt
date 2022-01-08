@@ -39,8 +39,8 @@ object GuiMod {
 
 
 
-    fun test() {
-        GUI_BLOCK = AutoClickerBlock(  FabricBlockSettings.of(Material.TNT).sounds(BlockSoundGroup.GRASS) , ::AutoClickerGuiDescription)
+    fun register() {
+        GUI_BLOCK = AutoClickerBlock(  FabricBlockSettings.of(Material.STONE).sounds(BlockSoundGroup.STONE) , ::AutoClickerGuiDescription)
         Registry.register(Registry.BLOCK, Identifier(ClickMachine.ID, "auto_clicker"), GUI_BLOCK)
         GUI_BLOCK_ITEM = BlockItem(GUI_BLOCK, Item.Settings().group(ItemGroup.MISC))
         Registry.register(Registry.ITEM, Identifier(ClickMachine.ID, "auto_clicker"), GUI_BLOCK_ITEM)
