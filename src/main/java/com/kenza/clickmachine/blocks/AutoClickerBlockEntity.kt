@@ -48,7 +48,9 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     private var tickCounter = 0
 
 
-    override fun markDirty() {}
+    override fun markDirty() {
+        super<BlockEntity>.markDirty()
+    }
 
     override fun canPlayerUse(player: PlayerEntity): Boolean {
         return pos.isWithinDistance(player.blockPos, 4.5)
@@ -74,7 +76,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     override fun readNbt(nbt: NbtCompound) {
         super.readNbt(nbt)
         Inventories.readNbt(nbt, items)
-        rightClickMode = nbt.getBoolean("rightClickMode")
+        rightClickMode = nbt.getBoolean("Nbt ")
     }
 
     public override fun writeNbt(nbt: NbtCompound) {
@@ -170,4 +172,5 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
             ClientPlayNetworking.send(UpdateAutoClickerPacket.UPDATE_VALUE_PACKET_ID, packet)
         }
     }
+
 }

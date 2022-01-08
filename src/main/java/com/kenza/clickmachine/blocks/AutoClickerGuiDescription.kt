@@ -1,7 +1,6 @@
 package com.kenza.clickmachine.blocks
 
 import com.kenza.clickmachine.GuiMod.GUI_SCREEN_HANDLER_TYPE
-import net.minecraft.screen.ScreenHandlerType
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.screen.ScreenHandlerContext
 import io.github.cottonmc.cotton.gui.SyncedGuiDescription
@@ -9,12 +8,11 @@ import io.github.cottonmc.cotton.gui.widget.WGridPanel
 import io.github.cottonmc.cotton.gui.widget.WItemSlot
 import io.github.cottonmc.cotton.gui.widget.WButton
 import net.minecraft.text.LiteralText
-import net.minecraft.util.math.BlockPos
 
 class AutoClickerGuiDescription(
     syncId: Int,
     playerInventory: PlayerInventory,
-    context: ScreenHandlerContext
+    val context: ScreenHandlerContext,
 ) : SyncedGuiDescription(
     GUI_SCREEN_HANDLER_TYPE,
     syncId,
@@ -38,13 +36,16 @@ class AutoClickerGuiDescription(
 
         val t1 = blockInventory.getStack(0)
 
-        val x1 = WButton(LiteralText("Button C"))
+        val x1 = WButton(getRightClickModeText())
 
         x1.setOnClick {
-            val t3 = blockInventory.getStack(0)
-            x1.label = LiteralText("Button D1")
+            blockEntity?.apply {
+                rightClickMode = !rightClickMode
+                x1.label = getRightClickModeText()
+                markDirty()
 
-            AutoClickerBlockEntity.sendValueUpdatePacket(true, context)
+                AutoClickerBlockEntity.sendValueUpdatePacket(rightClickMode, context)
+            }
         }
 
         root.add(x1, root.insets.right / 2 - 1, 3, 5, 1)
@@ -71,4 +72,24 @@ class AutoClickerGuiDescription(
 //            throw AssertionError("ValidatedSlot.setVisible crashed", t)
 //        }
     }
+
+
+    var blockEntity : AutoClickerBlockEntity? = null
+        get() {
+            var block : AutoClickerBlockEntity? = null
+            context.run{ _, pos ->
+                block = world.getBlockEntity(pos) as? AutoClickerBlockEntity
+            }
+
+            return block
+        }
+
+
+
+    fun getRightClickModeText(): LiteralText {
+        val rightLickMode = blockEntity?.rightClickMode ?: false
+
+        return LiteralText("Button $rightLickMode")
+    }
+
 }
