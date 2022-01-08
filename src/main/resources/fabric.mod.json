@@ -1,8 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "click_machine",
+  "id": "clickmachine",
   "version": "${version}",
-
   "name": "Kenza's Click Machine",
   "description": "Adds one block to the game: Auto Clicker. This autoclicker can be placed in the world and used to simulate left or right mouse clicks.",
   "authors": [
@@ -26,7 +25,7 @@
     "modmenu": []
   },
   "mixins": [
-    "modid.mixins.json"
+    "clickmachine.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.12.0",
