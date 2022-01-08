@@ -42,8 +42,6 @@ class AutoClickerGuiDescription(
             blockEntity?.apply {
                 rightClickMode = !rightClickMode
                 x1.label = getRightClickModeText()
-                markDirty()
-
                 AutoClickerBlockEntity.sendValueUpdatePacket(rightClickMode, context)
             }
         }
@@ -89,7 +87,12 @@ class AutoClickerGuiDescription(
     fun getRightClickModeText(): LiteralText {
         val rightLickMode = blockEntity?.rightClickMode ?: false
 
-        return LiteralText("Button $rightLickMode")
+        if(rightLickMode){
+            return LiteralText("Right Click Mode")
+        }else{
+            return LiteralText("Left Click Mode")
+        }
+
     }
 
 }

@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions
 import com.kenza.clickmachine.ClickMachine.Companion.FAKE_PLAYER_BUILDER
 import com.kenza.clickmachine.GuiMod
 import com.kenza.clickmachine.common.UpdateAutoClickerPacket
+import com.kenza.clickmachine.utils.toVec3d
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.block.AirBlock
@@ -12,6 +13,10 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.MinecraftClient
+import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.boss.WitherEntity
+import net.minecraft.entity.damage.DamageSource
+import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.screen.NamedScreenHandlerFactory
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.item.ItemStack
@@ -22,13 +27,17 @@ import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.inventory.Inventories
+import net.minecraft.item.SwordItem
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.network.ServerPlayerInteractionManager
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
+import net.minecraft.util.Hand
+import net.minecraft.util.hit.BlockHitResult
+import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Direction.*
-import java.util.logging.Logger
 
 class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     ImplementedInventory, BlockEntity(GuiMod.GUI_BLOCKENTITY_TYPE, pos, state),
@@ -44,9 +53,19 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     }
 
     var rightClickMode = false
+        set(value) {
+            tickCounter = 0
+            field = value
+            markDirty()
+        }
 
     private var items = DefaultedList.ofSize(INVENTORY_SIZE, ItemStack.EMPTY)
     private var tickCounter = 0
+
+    private val interactionManager: ServerPlayerInteractionManager?
+        get() {
+            return MinecraftClient.getInstance().server?.getPlayerInteractionManager(fakePlayer)
+        }
 
 
     override fun markDirty() {
@@ -62,7 +81,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     }
 
     override fun getDisplayName(): Text {
-        return LiteralText("test title")
+        return LiteralText("Auto Clicker")
     }
 
     @Nullable
@@ -97,41 +116,122 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         nbt.putBoolean("rightClickMode", rightClickMode)
     }
 
-    fun tick(facing: Direction?) {
+
+
+    fun tick(facing: Direction) {
 
         if (world?.isClient == true) return
 
         val itemStack = items.firstOrNull()
 
+        fakePlayer.updateLastActionTime()
 
 
-        fakePlayer.inventory.selectedSlot = 0
-        fakePlayer.inventory.addPickBlock(itemStack)
+        (fakePlayer as ServerPlayerEntity).tick()
 
         if (itemStack == null || itemStack.isEmpty) {
+            fakePlayer.inventory.clear()
             return
+        }
+
+        if(fakePlayer.inventory.isEmpty){
+            fakePlayer.inventory.selectedSlot = 0
+            fakePlayer.inventory.addPickBlock(itemStack)
         }
 
 
         val blockPos = pos.offset(facing)
         val block = world?.getBlockState(blockPos)
 
+        val source = DamageSource.player(fakePlayer)
+        val mobs = world?.getEntitiesByClass(LivingEntity::class.java, Box(blockPos)) { e -> e !is PlayerEntity && e !is ArmorStandEntity && !e.isDead && !e.isInvulnerableTo(source) && (e !is WitherEntity || e.invulnerableTimer <= 0) } ?: emptyList()
+
+        tickCounter++
+
         if (block?.isAir == true) {
-            tickCounter = 0
+
+
+            world?.setBlockBreakingInfo(fakePlayer.id, blockPos, -1)
+
+            if(mobs.isEmpty()){
+                tickCounter = 0
+                return
+            }
+
+            if(rightClickMode){
+                tickRightModeForEntity(itemStack, mobs, facing)
+            }else {
+                tickLeftModeForEntity(itemStack, mobs, source)
+            }
+
             return
         }
 
 
-        tickCounter++
+        if (rightClickMode) {
+            tickRightMode(itemStack, blockPos, facing)
+        } else {
+            tickLeftMode(itemStack, blockPos)
+        }
 
-        val interactionManager = MinecraftClient.getInstance().server?.getPlayerInteractionManager(fakePlayer)
-//        fakePlayer.setPos(blockPos.x.toDouble() + 1, blockPos.y.toDouble() + 1, blockPos.z.toDouble() + 1)
+//        fakePlayer.inventory.clear()
+    }
 
+
+    private fun tickLeftModeForEntity(itemStack: ItemStack, mobs: List<LivingEntity>, source: DamageSource) {
+
+        if(tickCounter >= 20){
+            tickCounter = 0
+            mobs.firstOrNull()?.let { mob ->
+
+//                itemStack.damage(1, world?.random, null)
+//
+//                if (mob.isAlive) {
+//                    mob.damage(source, (itemStack.damage ).toFloat())
+//                }
+
+//                fakePlayer.itemCooldownManager.set(itemStack.item, 200)
+//                fakePlayer.handleAttack(mob)
+                fakePlayer.itemCooldownManager.set(itemStack.item, 1)
+                fakePlayer.tryAttack(mob)
+                fakePlayer.attack(mob)
+                fakePlayer.itemCooldownManager.set(itemStack.item, 1)
+            }
+
+
+        }
+
+
+    }
+
+    private fun tickRightModeForEntity(itemStack: ItemStack, mobs: List<LivingEntity>, facing: Direction) {
+
+        if(tickCounter >= 20){
+            tickCounter = 0
+            mobs.firstOrNull().let { mob ->
+                fakePlayer.interact(mob, Hand.MAIN_HAND)
+
+            }
+        }
+    }
+
+    private fun tickRightMode(itemStack: ItemStack, blockPos: BlockPos, facing: Direction) {
+        fakePlayer.interactAt(fakePlayer, blockPos.toVec3d(), Hand.MAIN_HAND)
+        world?.setBlockBreakingInfo(fakePlayer.id, blockPos, -1)
+        val d1 = interactionManager?.interactBlock(
+            fakePlayer,
+            world,
+            itemStack,
+            Hand.MAIN_HAND,
+            BlockHitResult(blockPos.toVec3d(), Direction.UP, blockPos, false)
+        )
+    }
+
+
+    private fun tickLeftMode(itemStack: ItemStack, blockPos: BlockPos) {
 
         val stateToBreak: BlockState = world!!.getBlockState(blockPos)
         val blockHardness: Float = stateToBreak.getHardness(world, blockPos)
-
-
 
         if (!canBreak(stateToBreak, blockHardness)) {
             tickCounter = 0
@@ -151,8 +251,6 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         }
 
         world?.setBlockBreakingInfo(fakePlayer.id, blockPos, destroyProgress.toInt())
-        fakePlayer.inventory.clear()
-
     }
 
     private fun canBreak(stateToBreak: BlockState, blockHardness: Float): Boolean {
@@ -177,7 +275,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         fun sendValueUpdatePacket(value: Boolean, ctx: ScreenHandlerContext) {
             val packet = PacketByteBuf(Unpooled.buffer())
             packet.writeBoolean(value)
-            var x1  : BlockPos? =null
+            var x1: BlockPos? = null
             ctx.run { _, pos ->
                 x1 = pos
                 packet.writeBlockPos(pos)
