@@ -23,6 +23,7 @@ import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.inventory.Inventories
 import net.minecraft.network.PacketByteBuf
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.math.Direction
@@ -73,10 +74,22 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         )
     }
 
+
+    override fun toUpdatePacket(): BlockEntityUpdateS2CPacket {
+        return BlockEntityUpdateS2CPacket.create(this)
+    }
+
+    override fun toInitialChunkDataNbt(): NbtCompound {
+        val nbt = super.toInitialChunkDataNbt()
+        writeNbt(nbt)
+//        nbt.putBoolean("#c", true)
+        return nbt
+    }
+
     override fun readNbt(nbt: NbtCompound) {
         super.readNbt(nbt)
         Inventories.readNbt(nbt, items)
-        rightClickMode = nbt.getBoolean("Nbt ")
+        rightClickMode = nbt.getBoolean("rightClickMode")
     }
 
     public override fun writeNbt(nbt: NbtCompound) {
