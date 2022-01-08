@@ -1,5 +1,6 @@
 package com.kenza.clickmachine.blocks
 
+import com.kenza.clickmachine.common.IRScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.BlockRenderType
@@ -9,7 +10,10 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.screen.ScreenHandler
+import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.BooleanProperty
 import net.minecraft.state.property.DirectionProperty
@@ -22,7 +26,10 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
-open class AutoClickerBlock(sounds: FabricBlockSettings) : BlockWithEntity(sounds) {
+open class AutoClickerBlock(
+    sounds: FabricBlockSettings,
+    val screenHandler: ((Int, PlayerInventory, ScreenHandlerContext) -> ScreenHandler)?
+) : BlockWithEntity(sounds) {
 
     override fun getPlacementState(ctx: ItemPlacementContext?): BlockState? {
         super.getPlacementState(ctx)
@@ -47,7 +54,11 @@ open class AutoClickerBlock(sounds: FabricBlockSettings) : BlockWithEntity(sound
         hand: Hand,
         hitResult: BlockHitResult
     ): ActionResult {
-        player.openHandledScreen(state.createScreenHandlerFactory(world, pos))
+
+        screenHandler?.let {
+            player.openHandledScreen(IRScreenHandlerFactory(screenHandler, pos!!))
+        }
+
         return ActionResult.SUCCESS
     }
 

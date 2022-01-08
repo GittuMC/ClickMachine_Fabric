@@ -1,5 +1,6 @@
 package com.kenza.clickmachine
 
+import com.kenza.clickmachine.common.UpdateAutoClickerPacket
 import com.kenza.clickmachine.utils.identifier
 import com.kenza.clickmachine.utils.openLastWorldOnInit
 import dev.cafeteria.fakeplayerapi.server.FakePlayerBuilder
@@ -29,6 +30,7 @@ class ClickMachine : ModInitializer {
 
         GuiMod.test()
 
+        UpdateAutoClickerPacket.register()
 
 
     }
