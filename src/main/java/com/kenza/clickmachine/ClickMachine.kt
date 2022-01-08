@@ -48,7 +48,7 @@ class ClickMachine : ModInitializer {
             ::AutoClickerGuiDescription
         )
         Registry.register(Registry.BLOCK, Identifier(ID, "auto_clicker"), GUI_BLOCK)
-        GUI_BLOCK_ITEM = BlockItem(GUI_BLOCK, Item.Settings().group(ItemGroup.MISC))
+        GUI_BLOCK_ITEM = BlockItem(GUI_BLOCK, Item.Settings().group(ItemGroup.REDSTONE))
         Registry.register(Registry.ITEM, Identifier(ID, "auto_clicker"), GUI_BLOCK_ITEM)
         GUI_BLOCKENTITY_TYPE = FabricBlockEntityTypeBuilder.create<AutoClickerBlockEntity>(
             FabricBlockEntityTypeBuilder.Factory<AutoClickerBlockEntity> { pos: BlockPos?, state: BlockState? ->
