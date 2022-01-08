@@ -1,6 +1,6 @@
 package com.kenza.clickmachine.blocks
 
-import com.kenza.clickmachine.GuiMod.GUI_SCREEN_HANDLER_TYPE
+import com.kenza.clickmachine.ClickMachine.Companion.GUI_SCREEN_HANDLER_TYPE
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.screen.ScreenHandlerContext
 import io.github.cottonmc.cotton.gui.SyncedGuiDescription

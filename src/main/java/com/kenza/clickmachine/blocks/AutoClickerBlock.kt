@@ -1,7 +1,6 @@
 package com.kenza.clickmachine.blocks
 
 import com.kenza.clickmachine.common.IRScreenHandlerFactory
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.BlockRenderType
 import net.minecraft.block.BlockState
@@ -21,15 +20,16 @@ import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
 import net.minecraft.util.BlockRotation
 import net.minecraft.util.Hand
+import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 open class AutoClickerBlock(
-    sounds: FabricBlockSettings,
+    settings: Settings,
     val screenHandler: ((Int, PlayerInventory, ScreenHandlerContext) -> ScreenHandler)?
-) : BlockWithEntity(sounds) {
+) : BlockWithEntity(settings) {
 
     override fun getPlacementState(ctx: ItemPlacementContext?): BlockState? {
         super.getPlacementState(ctx)
@@ -77,6 +77,19 @@ open class AutoClickerBlock(
     ): BlockEntityTicker<T>? {
         return  BlockEntityTicker { _, _, _, blockEntity -> (blockEntity as? AutoClickerBlockEntity)?.tick(getFacing(state!!)) }
     }
+
+    @Suppress("DEPRECATION")
+    override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
+        val oldBlockEntity = world.getBlockEntity(pos) as? AutoClickerBlockEntity
+        super.onStateReplaced(state, world, pos, newState, moved)
+        if (world.isClient) return
+
+        if (oldBlockEntity?.items?.isNotEmpty() == true) {
+            ItemScatterer.spawn(world, pos, oldBlockEntity.items)
+            world.updateComparators(pos, this)
+        }
+    }
+
 
 
     fun getFacing(state: BlockState): Direction = state[HORIZONTAL_FACING]

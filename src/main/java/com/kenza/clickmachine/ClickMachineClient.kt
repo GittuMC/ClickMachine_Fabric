@@ -1,6 +1,5 @@
 package com.kenza.clickmachine
 
-import com.kenza.clickmachine.GuiMod.GUI_SCREEN_HANDLER_TYPE
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
 import com.kenza.clickmachine.common.IRInventoryScreen
@@ -18,7 +17,7 @@ class ClickMachineClient : ClientModInitializer {
 //            )
 //        }
 
-        ScreenRegistry.register(GUI_SCREEN_HANDLER_TYPE) { controller, inv, _ -> IRInventoryScreen(controller, inv.player) }
+        ScreenRegistry.register(ClickMachine.GUI_SCREEN_HANDLER_TYPE) { controller, inv, _ -> IRInventoryScreen(controller, inv.player) }
 
 
     }

@@ -3,7 +3,7 @@ package com.kenza.clickmachine.blocks
 import blue.endless.jankson.annotation.Nullable
 import com.google.common.base.Preconditions
 import com.kenza.clickmachine.ClickMachine.Companion.FAKE_PLAYER_BUILDER
-import com.kenza.clickmachine.GuiMod
+import com.kenza.clickmachine.ClickMachine.Companion.GUI_BLOCKENTITY_TYPE
 import com.kenza.clickmachine.common.UpdateAutoClickerPacket
 import com.kenza.clickmachine.ext.LivingEntityAttribute
 import com.kenza.clickmachine.utils.toVec3d
@@ -39,7 +39,7 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 
 class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
-    ImplementedInventory, BlockEntity(GuiMod.GUI_BLOCKENTITY_TYPE, pos, state),
+    ImplementedInventory, BlockEntity(GUI_BLOCKENTITY_TYPE, pos, state),
     NamedScreenHandlerFactory {
 
 
@@ -216,15 +216,21 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     }
 
     private fun tickRightMode(itemStack: ItemStack, blockPos: BlockPos, facing: Direction) {
-        fakePlayer.interactAt(fakePlayer, blockPos.toVec3d(), Hand.MAIN_HAND)
-        world?.setBlockBreakingInfo(fakePlayer.id, blockPos, -1)
-        val d1 = interactionManager?.interactBlock(
-            fakePlayer,
-            world,
-            itemStack,
-            Hand.MAIN_HAND,
-            BlockHitResult(blockPos.toVec3d(), Direction.UP, blockPos, false)
-        )
+
+        if(tickCounter >= 20){
+            tickCounter = 0
+            fakePlayer.interactAt(fakePlayer, blockPos.toVec3d(), Hand.MAIN_HAND)
+            world?.setBlockBreakingInfo(fakePlayer.id, blockPos, -1)
+            val d1 = interactionManager?.interactBlock(
+                fakePlayer,
+                world,
+                itemStack,
+                Hand.MAIN_HAND,
+                BlockHitResult(blockPos.toVec3d(), Direction.UP, blockPos, false)
+            )
+        }
+
+
     }
 
 
