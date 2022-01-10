@@ -1,9 +1,2 @@
-# Fabric Example Mod
-
-## Setup
-
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
-
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+<h2>Minecraft mod for Fabric</h2>
+<p>Adds one block to the game: Auto Clicker. This autoclicker can be placed in the world and used to simulate left or right mouse clicks.<br />It can be used for automation: stone farm, wool farm, etc.<br /><br /><img src="https://github.com/dmkenza/ClickMachine_Fabric/blob/1.18.1/photos/1.png?raw=true" alt="" width="500" height="282" /><br /><strong><br />Mod requires:<br /></strong><br /><a href="https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin">Kotlin</a><br /><a title="Fabric" href="https://www.curseforge.com/minecraft/mc-mods/fabric-api">Fabric</a><br /><br /></p>
