@@ -124,7 +124,6 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
     }
 
-    @Environment(EnvType.SERVER)
     fun tick(facing: Direction) {
 
         if (world?.isClient == true) return
