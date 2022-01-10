@@ -71,11 +71,16 @@ open class AutoClickerBlock(
     }
 
     override fun <T : BlockEntity?> getTicker(
-        world: World?,
+        world: World,
         state: BlockState?,
         type: BlockEntityType<T>?
     ): BlockEntityTicker<T>? {
-        return  BlockEntityTicker { _, _, _, blockEntity -> (blockEntity as? AutoClickerBlockEntity)?.tick(getFacing(state!!)) }
+
+        return if (world.isClient)
+            BlockEntityTicker { _, _, _, blockEntity -> (blockEntity as? AutoClickerBlockEntity)?.clientTick() }
+        else
+            BlockEntityTicker { _, _, _, blockEntity -> (blockEntity as? AutoClickerBlockEntity)?.tick(getFacing(state!!)) }
+
     }
 
     @Suppress("DEPRECATION")
@@ -89,7 +94,6 @@ open class AutoClickerBlock(
             world.updateComparators(pos, this)
         }
     }
-
 
 
     fun getFacing(state: BlockState): Direction = state[HORIZONTAL_FACING]

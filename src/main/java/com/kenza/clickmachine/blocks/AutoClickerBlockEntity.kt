@@ -8,6 +8,8 @@ import com.kenza.clickmachine.common.UpdateAutoClickerPacket
 import com.kenza.clickmachine.ext.LivingEntityAttribute
 import com.kenza.clickmachine.utils.toVec3d
 import io.netty.buffer.Unpooled
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.block.AirBlock
 import net.minecraft.util.math.BlockPos
@@ -63,7 +65,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
     private val interactionManager: ServerPlayerInteractionManager?
         get() {
-            return MinecraftClient.getInstance().server?.getPlayerInteractionManager(fakePlayer)
+            return world?.server?.getPlayerInteractionManager(fakePlayer)
         }
 
 
@@ -117,6 +119,12 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
 
 
+    @Environment(EnvType.CLIENT)
+    fun clientTick() {
+
+    }
+
+    @Environment(EnvType.SERVER)
     fun tick(facing: Direction) {
 
         if (world?.isClient == true) return
@@ -221,7 +229,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
             tickCounter = 0
             fakePlayer.interactAt(fakePlayer, blockPos.toVec3d(), Hand.MAIN_HAND)
             world?.setBlockBreakingInfo(fakePlayer.id, blockPos, -1)
-            val d1 = interactionManager?.interactBlock(
+            interactionManager?.interactBlock(
                 fakePlayer,
                 world,
                 itemStack,
@@ -250,7 +258,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
         if (destroyProgress >= 10) {
             interactionManager?.tryBreakBlock(blockPos)
-            fakePlayer.inventory.clear()
+//            fakePlayer.inventory.clear()
             tickCounter = 0
             world?.setBlockBreakingInfo(fakePlayer.id, blockPos, -1)
             return
