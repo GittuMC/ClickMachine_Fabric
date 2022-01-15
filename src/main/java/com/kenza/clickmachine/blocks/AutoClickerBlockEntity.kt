@@ -2,51 +2,56 @@ package com.kenza.clickmachine.blocks
 
 import blue.endless.jankson.annotation.Nullable
 import com.google.common.base.Preconditions
-import com.kenza.clickmachine.ClickMachine.Companion.FAKE_PLAYER_BUILDER
 import com.kenza.clickmachine.ClickMachine.Companion.GUI_BLOCKENTITY_TYPE
+import com.kenza.clickmachine.ClickMachine.Companion.createFakePlayerBuilder
 import com.kenza.clickmachine.common.UpdateAutoClickerPacket
 import com.kenza.clickmachine.ext.LivingEntityAttribute
+import com.kenza.clickmachine.ext.PlayerInventoryAccessor
 import com.kenza.clickmachine.utils.toVec3d
 import io.netty.buffer.Unpooled
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.block.AirBlock
-import net.minecraft.util.math.BlockPos
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.boss.WitherEntity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.screen.NamedScreenHandlerFactory
-import net.minecraft.util.collection.DefaultedList
-import net.minecraft.item.ItemStack
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.text.LiteralText
 import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.screen.ScreenHandlerContext
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.inventory.Inventories
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
+import net.minecraft.screen.NamedScreenHandlerFactory
+import net.minecraft.screen.ScreenHandler
+import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.server.network.ServerPlayerInteractionManager
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Hand
+import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.hit.BlockHitResult
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
+import java.util.*
 
 class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     ImplementedInventory, BlockEntity(GUI_BLOCKENTITY_TYPE, pos, state),
     NamedScreenHandlerFactory {
 
 
+
+    var placerEntityUuid: UUID? = null
+
+
     private val fakePlayer by lazy {
-        FAKE_PLAYER_BUILDER.create(
+        createFakePlayerBuilder(placerEntityUuid).create(
             world!!.server,
             world as ServerWorld,
             "AutoClickerBlockEntity"
@@ -65,8 +70,10 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
     private val interactionManager: ServerPlayerInteractionManager?
         get() {
-            return world?.server?.getPlayerInteractionManager(fakePlayer)
+//            val x = world?.getEntityById(placerEntityUuid)
+            return world?.server?.getPlayerInteractionManager(     fakePlayer)
         }
+
 
 
     override fun markDirty() {
@@ -110,11 +117,13 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         super.readNbt(nbt)
         Inventories.readNbt(nbt, items)
         rightClickMode = nbt.getBoolean("rightClickMode")
+        placerEntityUuid = nbt.getUuid("placerEntityUuid")
     }
 
     public override fun writeNbt(nbt: NbtCompound) {
         Inventories.writeNbt(nbt, items)
         nbt.putBoolean("rightClickMode", rightClickMode)
+        nbt.putUuid("placerEntityUuid", placerEntityUuid)
     }
 
 
@@ -141,8 +150,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         }
 
         if(fakePlayer.inventory.isEmpty){
-            fakePlayer.inventory.selectedSlot = 0
-            fakePlayer.inventory.addPickBlock(itemStack)
+            (fakePlayer.inventory as PlayerInventoryAccessor).main.set(0, itemStack)
             (fakePlayer as? LivingEntityAttribute)?.kenza_sendEquipmentChanges()
         }
 
@@ -174,12 +182,17 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
             return
         }
 
+        try {
+            if (rightClickMode) {
+                tickRightMode(itemStack, blockPos, facing)
+            } else {
+                tickLeftMode(itemStack, blockPos)
+            }
 
-        if (rightClickMode) {
-            tickRightMode(itemStack, blockPos, facing)
-        } else {
-            tickLeftMode(itemStack, blockPos)
+        }catch (e: Exception){
+            e.printStackTrace()
         }
+
 
 //        fakePlayer.inventory.clear()
     }

@@ -30,12 +30,13 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
+import java.util.*
 
 class ClickMachine : ModInitializer {
 
 
     //data get entity @s SelectedItem
-
+    //give @p iron_pickaxe{Damage:10000} 20
 
 
     override fun onInitialize() {
@@ -98,15 +99,28 @@ class ClickMachine : ModInitializer {
         @JvmField
         val LOGGER = LogManager.getLogger("click_machine")
 
-        val FAKE_PLAYER_BUILDER =
-            FakePlayerBuilder(identifier("default_fake_player")) { builder, server, world, profile ->
+
+        fun createFakePlayerBuilder(uuid: UUID?): FakePlayerBuilder {
+            return FakePlayerBuilder(identifier("default_fake_player")) { builder, server, world, profile ->
                 object : FakeServerPlayer(builder, server, world, profile) {
+
+                    override fun getId(): Int {
+                        return super.getId()
+                    }
+
+                    override fun getUuid(): UUID {
+                        return uuid ?: super.getUuid()
+                    }
                     override fun isCreative(): Boolean = false
                     override fun isSpectator(): Boolean = false
                     override fun playSound(sound: SoundEvent?, volume: Float, pitch: Float) {}
                     override fun playSound(event: SoundEvent?, category: SoundCategory?, volume: Float, pitch: Float) {}
                 }
             }
+        }
+
+//        val FAKE_PLAYER_BUILDER =
+
     }
 }
 

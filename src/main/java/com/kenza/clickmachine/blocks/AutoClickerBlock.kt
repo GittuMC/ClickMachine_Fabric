@@ -8,9 +8,11 @@ import net.minecraft.block.BlockWithEntity
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.item.ItemStack
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.state.StateManager
@@ -61,6 +63,21 @@ open class AutoClickerBlock(
 
         return ActionResult.SUCCESS
     }
+
+    override fun onPlaced(
+        world: World?,
+        pos: BlockPos?,
+        state: BlockState?,
+        placer: LivingEntity?,
+        itemStack: ItemStack?
+    ) {
+        (world?.getBlockEntity(pos) as? AutoClickerBlockEntity)?.apply {
+            placerEntityUuid = placer?.uuid
+            this.markDirty()
+        }
+        super.onPlaced(world, pos, state, placer, itemStack)
+    }
+
 
     override fun createBlockEntity(pos: BlockPos, state: BlockState): BlockEntity? {
         return AutoClickerBlockEntity(pos, state)
