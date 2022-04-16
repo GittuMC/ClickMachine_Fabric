@@ -1,8 +1,8 @@
 package com.kenza.clickmachine
 
 import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
 import com.kenza.clickmachine.common.IRInventoryScreen
+import net.minecraft.client.gui.screen.ingame.HandledScreens
 
 class ClickMachineClient : ClientModInitializer {
     override fun onInitializeClient() {
@@ -17,7 +17,8 @@ class ClickMachineClient : ClientModInitializer {
 //            )
 //        }
 
-        ScreenRegistry.register(ClickMachine.GUI_SCREEN_HANDLER_TYPE) { controller, inv, _ -> IRInventoryScreen(controller, inv.player) }
+        HandledScreens.register(ClickMachine.GUI_SCREEN_HANDLER_TYPE) { controller, inv, _ -> IRInventoryScreen(controller, inv.player) }
+
 
 
     }

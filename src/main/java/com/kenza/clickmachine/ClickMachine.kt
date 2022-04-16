@@ -11,7 +11,6 @@ import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Material
@@ -45,7 +44,8 @@ class ClickMachine : ModInitializer {
 
 
         GUI_BLOCK = AutoClickerBlock(
-            FabricBlockSettings.of(Material.STONE).strength(6f).breakByTool(FabricToolTags.PICKAXES, 2).requiresTool(),
+//            FabricBlockSettings.of(Material.STONE).strength(6f).breakByTool(FabricToolTags.PICKAXES, 2).requiresTool(),
+            FabricBlockSettings.of(Material.STONE).strength(6f).requiresTool(),
             ::AutoClickerGuiDescription
         )
         Registry.register(Registry.BLOCK, Identifier(ID, "auto_clicker"), GUI_BLOCK)
