@@ -5,8 +5,9 @@ import com.kenza.clickmachine.blocks.AutoClickerBlockEntity
 import com.kenza.clickmachine.blocks.AutoClickerGuiDescription
 import com.kenza.clickmachine.common.UpdateAutoClickerPacket
 import com.kenza.clickmachine.utils.identifier
-import dev.cafeteria.fakeplayerapi.server.FakePlayerBuilder
-import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
+import com.mojang.authlib.GameProfile
+import dev.cafeteria.fakeplayerapi.mixin.ServerPlayerEntityAccessor
+import dev.cafeteria.fakeplayerapi.server.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
@@ -15,14 +16,18 @@ import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Material
 import net.minecraft.block.entity.BlockEntityType
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.network.PacketByteBuf
+import net.minecraft.network.encryption.PlayerPublicKey
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.ScreenHandlerType
-import net.minecraft.sound.BlockSoundGroup
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
@@ -65,7 +70,7 @@ class ClickMachine : ModInitializer {
             Identifier(
                 ID, "auto_clicker"
             ),
-            ScreenHandlerRegistry.ExtendedClientHandlerFactory<AutoClickerGuiDescription> { syncId: Int, inv: PlayerInventory, buf: PacketByteBuf ->
+            { syncId: Int, inv: PlayerInventory, buf: PacketByteBuf ->
                 AutoClickerGuiDescription(
                     syncId, inv, ScreenHandlerContext.create(inv.player.world, buf.readBlockPos())
                 )
@@ -123,6 +128,8 @@ class ClickMachine : ModInitializer {
 
     }
 }
+
+
 
 fun Any.debug(msg: String) {
     ClickMachine.LOGGER.debug(msg)

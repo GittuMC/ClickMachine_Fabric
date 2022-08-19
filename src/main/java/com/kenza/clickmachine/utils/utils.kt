@@ -1,8 +1,8 @@
 package com.kenza.clickmachine.utils
 
 import com.kenza.clickmachine.ClickMachine
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
-import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType
 import net.minecraft.block.Block
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.util.SpriteIdentifier
@@ -13,6 +13,8 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
+import net.minecraft.text.MutableText
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.math.Direction
@@ -78,3 +80,5 @@ private val DIRECTIONS = Direction.values()
 
 val Fluid?.rawId: Int
     get() = Registry.FLUID.getRawId(this)
+
+fun literal(text: String): MutableText = Text.literal(text)

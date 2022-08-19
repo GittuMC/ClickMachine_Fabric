@@ -31,7 +31,8 @@ import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.server.network.ServerPlayerInteractionManager
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.LiteralText
+import net.minecraft.text.LiteralTextContent
+import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
@@ -89,7 +90,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     }
 
     override fun getDisplayName(): Text {
-        return LiteralText("Auto Clicker")
+        return  MutableText.of(LiteralTextContent("Auto Clicker"))
     }
 
     @Nullable
