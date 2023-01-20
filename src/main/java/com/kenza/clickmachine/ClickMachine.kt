@@ -5,10 +5,10 @@ import com.kenza.clickmachine.blocks.AutoClickerBlockEntity
 import com.kenza.clickmachine.blocks.AutoClickerGuiDescription
 import com.kenza.clickmachine.common.UpdateAutoClickerPacket
 import com.kenza.clickmachine.utils.identifier
-import com.mojang.authlib.GameProfile
-import dev.cafeteria.fakeplayerapi.mixin.ServerPlayerEntityAccessor
 import dev.cafeteria.fakeplayerapi.server.*
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
@@ -16,24 +16,18 @@ import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Material
 import net.minecraft.block.entity.BlockEntityType
-import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.item.BlockItem
-import net.minecraft.item.Item
-import net.minecraft.item.ItemGroup
+import net.minecraft.item.*
 import net.minecraft.network.PacketByteBuf
-import net.minecraft.network.encryption.PlayerPublicKey
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.ScreenHandlerType
-import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.registry.Registry
-import org.apache.logging.log4j.LogManager
 import java.util.*
 
 class ClickMachine : ModInitializer {
@@ -53,9 +47,26 @@ class ClickMachine : ModInitializer {
             FabricBlockSettings.of(Material.STONE).strength(6f).requiresTool(),
             ::AutoClickerGuiDescription
         )
-        Registry.register(Registry.BLOCK, Identifier(ID, "auto_clicker"), GUI_BLOCK)
-        GUI_BLOCK_ITEM = BlockItem(GUI_BLOCK, Item.Settings().group(ItemGroup.REDSTONE))
-        Registry.register(Registry.ITEM, Identifier(ID, "auto_clicker"), GUI_BLOCK_ITEM)
+        Registry.register(Registries.BLOCK, Identifier(ID, "auto_clicker"), GUI_BLOCK)
+
+//        val icon = {
+//            Registries.ITEM.
+//        }
+
+
+        val group = ItemGroups.getGroups().get(2)
+//        val tab = FabricItemGroup.builder(identifier("click_machine_tab")).icon(
+//            return
+//        ).build();
+
+        ItemGroupEvents.modifyEntriesEvent(group).register { entries ->
+            entries.add(GUI_BLOCK_ITEM)
+        }
+
+//        FabricItemSettings().maxDamage()
+
+        GUI_BLOCK_ITEM = BlockItem(GUI_BLOCK, Item.Settings())
+        Registry.register(Registries.ITEM, Identifier(ID, "auto_clicker"), GUI_BLOCK_ITEM)
         GUI_BLOCKENTITY_TYPE = FabricBlockEntityTypeBuilder.create<AutoClickerBlockEntity>(
             FabricBlockEntityTypeBuilder.Factory<AutoClickerBlockEntity> { pos: BlockPos?, state: BlockState? ->
                 AutoClickerBlockEntity(
@@ -64,7 +75,7 @@ class ClickMachine : ModInitializer {
                 )
             }, GUI_BLOCK
         ).build(null)
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, Identifier(ID, "auto_clicker"), GUI_BLOCKENTITY_TYPE)
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier(ID, "auto_clicker"), GUI_BLOCKENTITY_TYPE)
 
         GUI_SCREEN_HANDLER_TYPE = ScreenHandlerRegistry.registerExtended<AutoClickerGuiDescription>(
             Identifier(
@@ -101,8 +112,8 @@ class ClickMachine : ModInitializer {
         val MOD_ID = identifier(ID)
 
 
-        @JvmField
-        val LOGGER = LogManager.getLogger("click_machine")
+//        @JvmField
+//        val LOGGER = LogManager.getLogger("click_machine")
 
 
         fun createFakePlayerBuilder(uuid: UUID?): FakePlayerBuilder {
@@ -131,6 +142,3 @@ class ClickMachine : ModInitializer {
 
 
 
-fun Any.debug(msg: String) {
-    ClickMachine.LOGGER.debug(msg)
-}

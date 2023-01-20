@@ -83,9 +83,9 @@ operator fun Vec3d.component1() = this.x
 operator fun Vec3d.component2() = this.y
 operator fun Vec3d.component3() = this.z
 
-operator fun Vec3f.component1() = this.x
-operator fun Vec3f.component2() = this.y
-operator fun Vec3f.component3() = this.z
+//operator fun Vec3f.component1() = this.x
+//operator fun Vec3f.component2() = this.y
+//operator fun Vec3f.component3() = this.z
 
 operator fun ItemStack.component1(): ItemStack = this
 operator fun ItemStack.component2(): Item = item

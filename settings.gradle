@@ -6,6 +6,29 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         gradlePluginPortal()
+
+        maven { url "https://maven.architectury.dev/" }
+        maven { url "https://maven.minecraftforge.net/" }
+        maven { url "https://jitpack.io" }
+        mavenCentral()
+        maven { url "https://server.bbkr.space/" }
+        maven {
+            url "https://server.bbkr.space/artifactory/libs-release"
+            content {
+                includeGroup "io.github.cottonmc"
+            }
+        }
+        maven {
+            url = "https://maven.terraformersmc.com/releases"
+            content {
+                includeGroup "com.terraformersmc"
+            }
+        }
+        maven {
+            name = 'Sponge Snapshots'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
 
     plugins {

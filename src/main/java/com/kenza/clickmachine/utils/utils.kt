@@ -10,6 +10,8 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
@@ -18,7 +20,6 @@ import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.registry.Registry
 
 
 val EMPTY_INT_ARRAY = intArrayOf()
@@ -28,22 +29,19 @@ fun identifier(id: String) = Identifier(ClickMachine.ID, id)
 fun blockSpriteId(id: String) = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, identifier(id))
 
 fun Identifier.block(block: Block): Identifier {
-    Registry.register(Registry.BLOCK, this, block)
+    Registry.register(Registries.BLOCK, this, block)
     return this
 }
 
-fun Identifier.fluid(fluid: Fluid): Identifier {
-    Registry.register(Registry.FLUID, this, fluid)
-    return this
-}
+
 
 fun Identifier.item(item: Item): Identifier {
-    Registry.register(Registry.ITEM, this, item)
+    Registry.register(Registries.ITEM, this, item)
     return this
 }
 
 fun Identifier.blockEntityType(entityType: BlockEntityType<*>): Identifier {
-    Registry.register(Registry.BLOCK_ENTITY_TYPE, this, entityType)
+    Registry.register(Registries.BLOCK_ENTITY_TYPE, this, entityType)
     return this
 }
 
@@ -78,7 +76,7 @@ fun unpack(byte: Byte): List<Direction> {
 
 private val DIRECTIONS = Direction.values()
 
-val Fluid?.rawId: Int
-    get() = Registry.FLUID.getRawId(this)
+//val Fluid?.rawId: Int
+//    get() = Registry.FLUID.getRawId(this)
 
 fun literal(text: String): MutableText = Text.literal(text)

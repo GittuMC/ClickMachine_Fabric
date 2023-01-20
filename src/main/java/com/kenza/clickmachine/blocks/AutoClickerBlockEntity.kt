@@ -47,7 +47,6 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     NamedScreenHandlerFactory {
 
 
-
     var placerEntityUuid: UUID? = null
 
 
@@ -72,9 +71,8 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     private val interactionManager: ServerPlayerInteractionManager?
         get() {
 //            val x = world?.getEntityById(placerEntityUuid)
-            return world?.server?.getPlayerInteractionManager(     fakePlayer)
+            return world?.server?.getPlayerInteractionManager(fakePlayer)
         }
-
 
 
     override fun markDirty() {
@@ -90,7 +88,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     }
 
     override fun getDisplayName(): Text {
-        return  MutableText.of(LiteralTextContent("Auto Clicker"))
+        return MutableText.of(LiteralTextContent("Auto Clicker"))
     }
 
     @Nullable
@@ -115,18 +113,27 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     }
 
     override fun readNbt(nbt: NbtCompound) {
-        super.readNbt(nbt)
-        Inventories.readNbt(nbt, items)
-        rightClickMode = nbt.getBoolean("rightClickMode")
-        placerEntityUuid = nbt.getUuid("placerEntityUuid")
+        try {
+            super.readNbt(nbt)
+            Inventories.readNbt(nbt, items)
+            rightClickMode = nbt.getBoolean("rightClickMode")
+            placerEntityUuid = nbt.getUuid("placerEntityUuid")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     public override fun writeNbt(nbt: NbtCompound) {
-        Inventories.writeNbt(nbt, items)
-        nbt.putBoolean("rightClickMode", rightClickMode)
-        nbt.putUuid("placerEntityUuid", placerEntityUuid)
-    }
 
+        try {
+            Inventories.writeNbt(nbt, items)
+            nbt.putBoolean("rightClickMode", rightClickMode)
+            nbt.putUuid("placerEntityUuid", placerEntityUuid)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
 
 
     @Environment(EnvType.CLIENT)
@@ -150,7 +157,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
             return
         }
 
-        if(fakePlayer.inventory.isEmpty){
+        if (fakePlayer.inventory.isEmpty) {
             (fakePlayer.inventory as PlayerInventoryAccessor).main.set(0, itemStack)
             (fakePlayer as? LivingEntityAttribute)?.kenza_sendEquipmentChanges()
         }
@@ -160,7 +167,11 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         val block = world?.getBlockState(blockPos)
 
         val source = DamageSource.player(fakePlayer)
-        val mobs = world?.getEntitiesByClass(LivingEntity::class.java, Box(blockPos)) { e -> e !is PlayerEntity && e !is ArmorStandEntity && !e.isDead && !e.isInvulnerableTo(source) && (e !is WitherEntity || e.invulnerableTimer <= 0) } ?: emptyList()
+        val mobs = world?.getEntitiesByClass(
+            LivingEntity::class.java,
+            Box(blockPos)
+        ) { e -> e !is PlayerEntity && e !is ArmorStandEntity && !e.isDead && !e.isInvulnerableTo(source) && (e !is WitherEntity || e.invulnerableTimer <= 0) }
+            ?: emptyList()
 
         tickCounter++
 
@@ -169,14 +180,14 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
             world?.setBlockBreakingInfo(fakePlayer.id, blockPos, -1)
 
-            if(mobs.isEmpty()){
+            if (mobs.isEmpty()) {
                 tickCounter = 0
                 return
             }
 
-            if(rightClickMode){
+            if (rightClickMode) {
                 tickRightModeForEntity(itemStack, mobs, facing)
-            }else {
+            } else {
                 tickLeftModeForEntity(itemStack, mobs, source)
             }
 
@@ -190,7 +201,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
                 tickLeftMode(itemStack, blockPos)
             }
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -201,7 +212,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
     private fun tickLeftModeForEntity(itemStack: ItemStack, mobs: List<LivingEntity>, source: DamageSource) {
 
-        if(tickCounter >= 20){
+        if (tickCounter >= 20) {
             tickCounter = 0
             mobs.firstOrNull()?.let { mob ->
 
@@ -227,7 +238,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
     private fun tickRightModeForEntity(itemStack: ItemStack, mobs: List<LivingEntity>, facing: Direction) {
 
-        if(tickCounter >= 20){
+        if (tickCounter >= 20) {
             tickCounter = 0
             mobs.firstOrNull().let { mob ->
                 fakePlayer.interact(mob, Hand.MAIN_HAND)
@@ -238,7 +249,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
     private fun tickRightMode(itemStack: ItemStack, blockPos: BlockPos, facing: Direction) {
 
-        if(tickCounter >= 20){
+        if (tickCounter >= 20) {
             tickCounter = 0
             fakePlayer.interactAt(fakePlayer, blockPos.toVec3d(), Hand.MAIN_HAND)
             world?.setBlockBreakingInfo(fakePlayer.id, blockPos, -1)
