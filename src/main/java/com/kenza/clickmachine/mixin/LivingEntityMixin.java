@@ -1,6 +1,5 @@
 package com.kenza.clickmachine.mixin;
 
-import blue.endless.jankson.annotation.Nullable;
 import com.kenza.clickmachine.ext.LivingEntityAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '1.2-SNAPSHOT'
 	id 'maven-publish'
 	id "org.jetbrains.kotlin.jvm"
 }
@@ -51,9 +51,20 @@ repositories {
 		}
 	}
 	maven { url "https://maven.architectury.dev/" }
+
+	maven {
+		name = "Modmuss50"
+		url = "https://maven.modmuss50.me/"
+		content {
+			includeGroup "RebornCore"
+			includeGroup "TechReborn"
+			includeGroup "teamreborn"
+		}
+	}
 }
 
 dependencies {
+//	modImplementation fileTree(dir: 'libs', include: ['*.jar'])
 	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
 	// To change the versions see the gradle.properties file
@@ -66,13 +77,13 @@ dependencies {
 
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 
-	modApi "com.minelittlepony:kirin:${project.kirin_version}"
-	include  "com.minelittlepony:kirin:${project.kirin_version}"
+//	modApi "com.minelittlepony:kirin:${project.kirin_version}"
+//	include  "com.minelittlepony:kirin:${project.kirin_version}"
 
 	modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
-	modApi "dev.architectury:architectury:${project.architectury_version}"
+//	modApi "dev.architectury:architectury:${project.architectury_version}"
 
-	modImplementation include("dev.cafeteria:fake-player-api:${project.fakeplayerapi_version}")
+//	modImplementation include("dev.cafeteria:fake-player-api:${project.fakeplayerapi_version}")
 
 }
 

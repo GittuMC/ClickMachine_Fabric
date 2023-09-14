@@ -1,6 +1,5 @@
 package com.kenza.clickmachine.utils
 
-import com.minelittlepony.common.event.ScreenInitCallback
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.TitleScreen

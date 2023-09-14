@@ -1,12 +1,12 @@
 {
     "parent": "block/cube",
 	"textures": {
-		"north": "clickmachine:blocks/front",
-		"east": "clickmachine:blocks/side",
-		"south": "clickmachine:blocks/side",
-		"west": "clickmachine:blocks/side",
-		"up": "clickmachine:blocks/side",
-		"down": "clickmachine:blocks/side",
-		"particle": "clickmachine:blocks/side"
+		"north": "clickmachine:block/front",
+		"east": "clickmachine:block/side",
+		"south": "clickmachine:block/side",
+		"west": "clickmachine:block/side",
+		"up": "clickmachine:block/side",
+		"down": "clickmachine:block/side",
+		"particle": "clickmachine:block/side"
 	}
 }

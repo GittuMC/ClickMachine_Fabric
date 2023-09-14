@@ -1,9 +1,7 @@
 package com.kenza.clickmachine.blocks
 
-import blue.endless.jankson.annotation.Nullable
 import com.google.common.base.Preconditions
 import com.kenza.clickmachine.ClickMachine.Companion.GUI_BLOCKENTITY_TYPE
-import com.kenza.clickmachine.ClickMachine.Companion.createFakePlayerBuilder
 import com.kenza.clickmachine.common.UpdateAutoClickerPacket
 import com.kenza.clickmachine.ext.LivingEntityAttribute
 import com.kenza.clickmachine.ext.PlayerInventoryAccessor
@@ -12,6 +10,7 @@ import io.netty.buffer.Unpooled
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.block.AirBlock
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
@@ -51,11 +50,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
 
 
     private val fakePlayer by lazy {
-        createFakePlayerBuilder(placerEntityUuid).create(
-            world!!.server,
-            world as ServerWorld,
-            "AutoClickerBlockEntity"
-        )
+        FakePlayer.get(world as ServerWorld)
     }
 
     var rightClickMode = false
@@ -91,7 +86,6 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         return MutableText.of(LiteralTextContent("Auto Clicker"))
     }
 
-    @Nullable
     override fun createMenu(syncId: Int, inv: PlayerInventory, player: PlayerEntity): ScreenHandler? {
         return AutoClickerGuiDescription(
             syncId,
@@ -166,7 +160,8 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
         val blockPos = pos.offset(facing)
         val block = world?.getBlockState(blockPos)
 
-        val source = DamageSource.player(fakePlayer)
+        val source = world?.damageSources?.playerAttack(fakePlayer)
+//        val source = DamageSource.player(fakePlayer)
         val mobs = world?.getEntitiesByClass(
             LivingEntity::class.java,
             Box(blockPos)
@@ -188,7 +183,9 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
             if (rightClickMode) {
                 tickRightModeForEntity(itemStack, mobs, facing)
             } else {
-                tickLeftModeForEntity(itemStack, mobs, source)
+                source?.let {
+                    tickLeftModeForEntity(itemStack, mobs, source)
+                }
             }
 
             return
@@ -296,7 +293,7 @@ class AutoClickerBlockEntity(pos: BlockPos?, state: BlockState?) :
     }
 
     private fun isBreakable(stateToBreak: BlockState, blockHardness: Float): Boolean {
-        return !(stateToBreak.material.isLiquid || stateToBreak.block is AirBlock
+        return !(stateToBreak.isLiquid || stateToBreak.block is AirBlock
                 || blockHardness == -1f)
     }
 

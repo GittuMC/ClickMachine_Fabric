@@ -5,7 +5,6 @@ import com.kenza.clickmachine.blocks.AutoClickerBlockEntity
 import com.kenza.clickmachine.blocks.AutoClickerGuiDescription
 import com.kenza.clickmachine.common.UpdateAutoClickerPacket
 import com.kenza.clickmachine.utils.identifier
-import dev.cafeteria.fakeplayerapi.server.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
@@ -14,7 +13,7 @@ import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntit
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
-import net.minecraft.block.Material
+import net.minecraft.block.Blocks
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.*
@@ -44,7 +43,7 @@ class ClickMachine : ModInitializer {
 
         GUI_BLOCK = AutoClickerBlock(
 //            FabricBlockSettings.of(Material.STONE).strength(6f).breakByTool(FabricToolTags.PICKAXES, 2).requiresTool(),
-            FabricBlockSettings.of(Material.STONE).strength(6f).requiresTool(),
+            FabricBlockSettings.copy(Blocks.STONE).strength(6f).requiresTool(),
             ::AutoClickerGuiDescription
         )
         Registry.register(Registries.BLOCK, Identifier(ID, "auto_clicker"), GUI_BLOCK)
@@ -54,12 +53,14 @@ class ClickMachine : ModInitializer {
 //        }
 
 
-        val group = ItemGroups.getGroups().get(2)
+//        val group = ItemGroups.getGroups().get(2)
 //        val tab = FabricItemGroup.builder(identifier("click_machine_tab")).icon(
 //            return
 //        ).build();
 
-        ItemGroupEvents.modifyEntriesEvent(group).register { entries ->
+
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register { entries ->
             entries.add(GUI_BLOCK_ITEM)
         }
 
@@ -116,24 +117,24 @@ class ClickMachine : ModInitializer {
 //        val LOGGER = LogManager.getLogger("click_machine")
 
 
-        fun createFakePlayerBuilder(uuid: UUID?): FakePlayerBuilder {
-            return FakePlayerBuilder(identifier("default_fake_player")) { builder, server, world, profile ->
-                object : FakeServerPlayer(builder, server, world, profile) {
-
-                    override fun getId(): Int {
-                        return super.getId()
-                    }
-
-                    override fun getUuid(): UUID {
-                        return uuid ?: super.getUuid()
-                    }
-                    override fun isCreative(): Boolean = false
-                    override fun isSpectator(): Boolean = false
-                    override fun playSound(sound: SoundEvent?, volume: Float, pitch: Float) {}
-                    override fun playSound(event: SoundEvent?, category: SoundCategory?, volume: Float, pitch: Float) {}
-                }
-            }
-        }
+//        fun createFakePlayerBuilder(uuid: UUID?): FakePlayerBuilder {
+//            return FakePlayerBuilder(identifier("default_fake_player")) { builder, server, world, profile ->
+//                object : FakeServerPlayer(builder, server, world, profile) {
+//
+//                    override fun getId(): Int {
+//                        return super.getId()
+//                    }
+//
+//                    override fun getUuid(): UUID {
+//                        return uuid ?: super.getUuid()
+//                    }
+//                    override fun isCreative(): Boolean = false
+//                    override fun isSpectator(): Boolean = false
+//                    override fun playSound(sound: SoundEvent?, volume: Float, pitch: Float) {}
+//                    override fun playSound(event: SoundEvent?, category: SoundCategory?, volume: Float, pitch: Float) {}
+//                }
+//            }
+//        }
 
 //        val FAKE_PLAYER_BUILDER =
 

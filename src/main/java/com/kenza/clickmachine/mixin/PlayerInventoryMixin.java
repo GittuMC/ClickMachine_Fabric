@@ -2,7 +2,6 @@ package com.kenza.clickmachine.mixin;
 
 
 import com.kenza.clickmachine.ext.PlayerInventoryAccessor;
-import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
