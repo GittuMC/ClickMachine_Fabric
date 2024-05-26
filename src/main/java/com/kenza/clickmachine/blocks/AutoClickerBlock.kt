@@ -35,7 +35,7 @@ open class AutoClickerBlock(
 
     override fun getPlacementState(ctx: ItemPlacementContext?): BlockState? {
         super.getPlacementState(ctx)
-        return this.defaultState.with(HORIZONTAL_FACING, ctx?.playerLookDirection?.opposite)//.with(ACTIVE, false)
+        return this.defaultState.with(HORIZONTAL_FACING, ctx?.horizontalPlayerFacing?.opposite)//.with(ACTIVE, false)
     }
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>?) {
