@@ -130,4 +130,4 @@ publishing {
 	}
 }
 
-compileKotlin.kotlinOptions.jvmTarget = "16"
+compileKotlin.kotlinOptions.jvmTarget = "17"
